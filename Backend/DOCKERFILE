@@ -1,11 +1,26 @@
+# Use the official Python image as a base
 FROM python:3.11
 
+# Set the working directory in the container
 WORKDIR /code
+
+# Copy the requirements.txt file into the container
 COPY ./requirements.txt /code/requirements.txt
+
+# Install the dependencies
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+# Copy your application code into the container
 COPY . /code
 
+# Copy the modified dependency file into the appropriate location
+# COPY modifications/openai.py /usr/local/lib/python3.11/site-packages/langchain_community/embeddings/openai.py
+
+# Expose port 80
 EXPOSE 80
+
+# Set environment variables
 ENV FORWARDED_ALLOW_IPS *
 
+# Command to run your application
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80", "--forwarded-allow-ips", "*", "--proxy-headers"]

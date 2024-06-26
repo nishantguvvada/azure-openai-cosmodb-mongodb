@@ -8,9 +8,9 @@ import json
 from typing import List
 import pymongo
 from dotenv import load_dotenv
-from langchain.chat_models import AzureChatOpenAI
-from langchain.embeddings import AzureOpenAIEmbeddings
-from langchain.vectorstores.azure_cosmos_db import AzureCosmosDBVectorSearch
+from langchain.chat_models.azure_openai import AzureChatOpenAI
+from langchain_community.embeddings import AzureOpenAIEmbeddings
+from langchain_community.vectorstores import AzureCosmosDBVectorSearch
 from langchain.schema.document import Document
 from langchain.agents import Tool
 from langchain.agents.agent_toolkits import create_conversational_retrieval_agent
@@ -22,8 +22,8 @@ DB_CONNECTION_STRING = os.environ.get("DB_CONNECTION_STRING")
 AOAI_ENDPOINT = os.environ.get("AOAI_ENDPOINT")
 AOAI_KEY = os.environ.get("AOAI_KEY")
 AOAI_API_VERSION = "2023-09-01-preview"
-COMPLETIONS_DEPLOYMENT = "completions"
-EMBEDDINGS_DEPLOYMENT = "embeddings"
+COMPLETIONS_DEPLOYMENT = "gpt-4-32k"
+EMBEDDINGS_DEPLOYMENT = "text-embedding-ada-002"
 db = pymongo.MongoClient(DB_CONNECTION_STRING).cosmic_works
 
 class CosmicWorksAIAgent:

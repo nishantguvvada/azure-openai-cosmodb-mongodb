@@ -5,15 +5,13 @@ This Azure resource deployment template uses some of the following practices:
 - [Abbrevation examples for Azure resources](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
 */
 
-
-
 /* *************************************************************** */
 /* Parameters */
 /* *************************************************************** */
 
 @description('Location where all resources will be deployed. This value defaults to the **East US** region.')
-@allowed([  
-  'eastus'  
+@allowed([
+  'eastus'
   'francecentral'
   'southcentralus'
   'uksouth'
@@ -63,35 +61,6 @@ param acrSku string = 'Basic'
 /* Variables */
 /* *************************************************************** */
 
-var openAiSettings = {
-  name: '${name}-openai'
-  sku: openAiSku
-  maxConversationTokens: '100'
-  maxCompletionTokens: '500'
-  completionsModel: {
-    name: 'gpt-35-turbo'
-    version: '0613'
-    deployment: {
-      name: 'completions'
-    }
-    sku: {
-      name: 'Standard'
-      capacity: 120
-    }
-  }
-  embeddingsModel: {
-    name: 'text-embedding-ada-002'
-    version: '2'
-    deployment: {
-      name: 'embeddings'
-    }
-    sku: {
-      name: 'Standard'
-      capacity: 120     
-    }
-  }
-}
-
 var mongovCoreSettings = {
   mongoClusterName: '${name}-mongo'
   mongoClusterLogin: mongoDbUserName
@@ -109,7 +78,7 @@ var appServiceSettings = {
       repo: 'https://github.com/AzureCosmosDB/Azure-OpenAI-Developer-Guide-Front-End.git'
       branch: 'main'
     }
-  }  
+  }
 }
 
 /* *************************************************************** */
@@ -153,58 +122,9 @@ resource mongoFirewallRulesAllowAll 'Microsoft.DocumentDB/mongoClusters/firewall
   }
 }
 
-
 /* *************************************************************** */
 /* Azure OpenAI */
 /* *************************************************************** */
-
-resource openAiAccount 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: openAiSettings.name
-  location: location
-  sku: {
-    name: openAiSettings.sku    
-  }
-  kind: 'OpenAI'
-  properties: {
-    customSubDomainName: openAiSettings.name
-    publicNetworkAccess: 'Enabled'
-  }
-}
-
-resource openAiEmbeddingsModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
-  parent: openAiAccount
-  name: openAiSettings.embeddingsModel.deployment.name  
-  sku: {
-    name: openAiSettings.embeddingsModel.sku.name
-    capacity: openAiSettings.embeddingsModel.sku.capacity
-  }
-  properties: {
-    model: {
-      format: 'OpenAI'
-      name: openAiSettings.embeddingsModel.name
-      version: openAiSettings.embeddingsModel.version
-    }
-  }
-}
-
-resource openAiCompletionsModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
-  parent: openAiAccount
-  name: openAiSettings.completionsModel.deployment.name
-  dependsOn: [
-    openAiEmbeddingsModelDeployment
-  ]
-  sku: {
-    name: openAiSettings.completionsModel.sku.name
-    capacity: openAiSettings.completionsModel.sku.capacity
-  }
-  properties: {
-    model: {
-      format: 'OpenAI'
-      name: openAiSettings.completionsModel.name
-      version: openAiSettings.completionsModel.version
-    }    
-  }
-}
 
 /* *************************************************************** */
 /* Logging and instrumentation */
@@ -244,7 +164,6 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-
 /* *************************************************************** */
 /* Front-end Web App Hosting - Azure App Service */
 /* *************************************************************** */
@@ -283,12 +202,11 @@ resource appServiceWebDeployment 'Microsoft.Web/sites/sourcecontrols@2021-03-01'
   }
 }
 
-
 /* *************************************************************** */
 /* Registry for Back-end API Image - Azure Container Registry */
 /* *************************************************************** */
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = {
-  name: replace('${name}registry','-', '')
+  name: replace('${name}registry', '-', '')
   location: location
   sku: {
     name: acrSku
@@ -312,14 +230,14 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' 
         sharedKey: logAnalytics.listKeys().primarySharedKey
       }
     }
-    workloadProfiles: [
-      {
-        name: 'Warm'
-        minimumCount: 1
-        maximumCount: 10
-        workloadProfileType: 'E4'
-      }
-    ]
+    // workloadProfiles: [
+    //   {
+    //     name: 'Warm'
+    //     minimumCount: 1
+    //     maximumCount: 10
+    //     workloadProfileType: 'E4'
+    //   }
+    // ]
     infrastructureResourceGroup: 'ME_${resourceGroup().name}'
   }
 }
@@ -343,7 +261,7 @@ resource backendApiContainerApp 'Microsoft.App/containerApps@2023-05-01' = {
             latestRevision: true
             weight: 100
           }
-        ]   
+        ]
         corsPolicy: {
           allowCredentials: false
           allowedHeaders: [
@@ -376,7 +294,7 @@ resource backendApiContainerApp 'Microsoft.App/containerApps@2023-05-01' = {
           resources: {
             cpu: 1
             memory: '2Gi'
-          }         
+          }
         }
       ]
       scale: {
