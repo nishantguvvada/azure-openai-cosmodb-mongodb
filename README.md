@@ -17,4 +17,4 @@
 
 ![Azure Cosmos DB + Azure OpenAI Python Developer Guide Architecture Diagram](/06_Provision_Azure_Resources/media/architecture.jpg)
 
-This project is a deployed of https://github.com/AzureCosmosDB/Azure-OpenAI-Python-Developer-Guide
+This project is a deployment of https://github.com/AzureCosmosDB/Azure-OpenAI-Python-Developer-Guide
