@@ -1,4 +1,4 @@
-# Azure Cosmos DB + Azure OpenAI Python Developer Guide
+# Azure Cosmos DB + Azure OpenAI Python
 
 1. [Introduction](/00_Introduction/README.md)
 1. [Azure Overview](/01_Azure_Overview/README.md)
