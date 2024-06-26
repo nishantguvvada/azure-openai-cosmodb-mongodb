@@ -15,8 +15,6 @@
 1. [Connect the chat user interface with the chatbot API](/12_User_Interface/README.md)
 1. [Conclusion](/13_Conclusion/README.md)
 
-   (/Front-end.png)
-
 ![Azure Cosmos DB + Azure OpenAI Python Developer Guide Architecture Diagram](/06_Provision_Azure_Resources/media/architecture.jpg)
 
 This project is a deployment of https://github.com/AzureCosmosDB/Azure-OpenAI-Python-Developer-Guide
